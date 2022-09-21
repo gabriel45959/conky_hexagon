@@ -1,0 +1,50 @@
+--[[
+#=====================================================================================
+#
+#======================================================================================
+]]
+
+conky.config = {
+	cpu_avg_samples = 2,
+	diskio_avg_samples = 10,
+	double_buffer = true,
+	net_avg_samples = 2,
+	update_interval = 1,
+
+	alignment = 'top_right',
+	gap_x = 22,
+	gap_y = 42,
+	minimum_height = 568,
+	minimum_width = 390,
+	maximum_width = 390,
+
+	font = 'Noto Mono:size=11:regular',
+	override_utf8_locale = true,
+	short_units = true,
+	use_xft = true,
+	xftalpha = 1,
+
+	own_window = true,
+	own_window_argb_value = 15,
+	own_window_argb_visual = true,
+	own_window_class = 'Conky',
+	own_window_hints = 'undecorated,below,above,sticky,skip_taskbar,skip_pager',
+	own_window_transparent = true,
+	own_window_title = 'system_conky',
+	own_window_type = 'override',
+
+    lua_load = '/home/gabriel/conky_hexagon/hexagon.lua',
+	lua_draw_hook_pre = 'draw_clock',
+};
+
+conky.text = [[
+${image /home/gabriel/conky_gaby/primary/img/logo-arch.png -p 14,20 -s 60x60}
+${voffset 236}
+${offset 27}${color1}${cpugraph cpu0 20,85 FFFF00 FF0000 s}
+${voffset -5}
+${offset 217}${color1}${memgraph 20,85 FFFF00 FF0000 1 -t}
+${voffset 45}
+${offset 30}${color2}${diskiograph 20,140 FFFF00 FF0000}
+${execpi 300 curl -s "https://wttr.in/X5000.png?Q0t" -o ~/.cache/X5000.png }
+${image ~/.cache/X5000.png -p -10,487 -s 200x70}
+]]
