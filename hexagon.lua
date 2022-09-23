@@ -256,31 +256,31 @@ config_clock={
                 data="${time %d} ${time  %B} ${time %Y}",
                 color={0xFFFFFF,.7},
                 font_size=18,
-                x=-50,y=-50,
+                x=5,y=-50,
             },
             {
                 data="${time %A}",
                 color={0xf0b036,1},
                 font_size=27,
-                x=-50,y=-80,
+                x=-10,y=-80,
             },
             {
                 data="${kernel}",
                 color={0xffffff,0.7},
                 font_size=20,
-                x=-50,y=-19,
+                x=0,y=-19,
             },
             {
                 data="${exec lsb_release -d | cut -d ':' -f 2 | tr  -d '[:blank:]'}",
                 color={0xffffff,0.9},
                 font_size=18,
-                x=-50,y=60,
+                x=0,y=60,
             },
             {
-                data="${addr enp2s0}",
+                data="${addr enp3s0}",
                 color={0xdfa418,0.8},
                 font_size=18,
-                x=-50,y=90,
+                x=0,y=90,
             },
         },
         clock_center={
@@ -417,6 +417,7 @@ function add_space_to_not_move(s)
     if j == 2 then s="  "..s end
     return s
   end
+--dibujo del hexagono
 function hexagon(ctx,values)
     line_width=values['line_width_edge']
     width=values['width']
@@ -449,10 +450,34 @@ function hexagon(ctx,values)
         cairo_stroke (ctx)
     end
 end
+--calculo de la posicion para las manecillas del reloj
 function angle_to_position(start_angle, current_angle)
     return ( ( current_angle * (2 * math.pi / start_angle) ) - (math.pi / 2) )
 end
-
+--calcular posicion del texto dentro del reloj
+function calc_position(data_value)
+   
+        if data_value['data']:sub(1,1)=='$' then
+            return data_value['x']-((string.len(conky_parse(data_value['data']))/2)*10)
+        else
+            return data_value['x']-((string.len(data_value['data'])/2)*10)
+        end
+end
+--dibujo y posiciono las manecillas del reloj
+function hand_clock(cr,time,values,number_hexagon,type_hand,type_translate)
+    local i=1
+    local translate=0
+    cairo_rotate(cr,time)
+    while i <=number_hexagon do
+        cairo_translate (cr, values[type_hand]['diameter']+3.5,0)
+        hexagon(cr,values[type_hand])
+        translate= translate + (values[type_translate]['diameter']+3.5)
+        i=i+1
+    end
+    cairo_translate (cr, -translate,0)
+    cairo_rotate(cr,-time)
+end
+-- reloj
 function hexagon_clock(cr,values)
     local i=1
     local translate=0
@@ -462,8 +487,9 @@ function hexagon_clock(cr,values)
     cairo_rotate(cr,angle_to_position(90,values['edge_clock']['rotate']))
     hexagon(cr,values['clock_center'])
 
-    for i in pairs(values['info']) do
-        cairo_move_to (cr, values['info'][i]['x'],values['info'][i]['y'])
+    --posicion y visualizacion del texto dentro del reloj
+    for i in pairs(values['info']) do        
+        cairo_move_to (cr, calc_position(values['info'][i]),values['info'][i]['y'])
         cairo_set_font_size (cr, values['info'][i]['font_size'])
         cairo_set_source_rgba(cr,hex_to_rgba(values['info'][i]['color']))
         if values['info'][i]['data']:sub(1,1)=='$' then
@@ -474,43 +500,19 @@ function hexagon_clock(cr,values)
     end
     cairo_stroke (cr)
 
-    horas= angle_to_position(12,tonumber(conky_parse ("${time %H}"))-24)
-    cairo_rotate(cr,horas)
-    while i <=4 do
-        cairo_translate (cr, values['hours']['diameter']+3.5,0)
-        hexagon(cr,values['hours'])
-        translate= translate + (values['hours']['diameter']+3.5)
-        i=i+1
-    end
-    cairo_translate (cr, -translate,0)
-    cairo_rotate(cr,-horas)
+    --calculo de la posicion de las horas
+    hours= angle_to_position(12,tonumber(conky_parse ("${time %H}"))-24)
+    hand_clock(cr,hours,values,4,'hours','hours')
+    
 
+    --calculo de la posicion de los minutos
+    minutes=angle_to_position(60,tonumber(conky_parse ("${time %M}")))
+    hand_clock(cr,minutes,values,5,'minutes','hours')
 
-    i=1
-    translate=0
-    minutos=angle_to_position(60,tonumber(conky_parse ("${time %M}")))
-    cairo_rotate(cr,minutos)
-    while i <=5 do
-        cairo_translate (cr, values['minutes']['diameter']+3.5,0)
-        hexagon(cr,values['minutes'])
-        translate= translate + (values['hours']['diameter']+3.5)
-        i=i+1
-    end
-    cairo_translate (cr, -translate,0)
-    cairo_rotate(cr,-minutos)
+    --calculo de la posicion de los segundos
+    seconds=angle_to_position(60,(1+tonumber(conky_parse ("${time %S}"))))-- se suma 1 por el tiempo de acutalizacion de conky
+    hand_clock(cr,seconds,values,6,'seconds','seconds')
 
-    i=1
-    translate= 0
-    segundos=angle_to_position(60,(1+tonumber(conky_parse ("${time %S}"))))-- se suma 1 por el tiempo de acutalizacion de conky
-    cairo_rotate(cr,segundos)
-    while i <=6 do
-        cairo_translate (cr, values['seconds']['diameter']+3.5,0)
-        hexagon(cr,values['seconds'])
-        translate= translate + values['seconds']['diameter']+3.5
-        i=i+1
-    end
-    cairo_translate (cr, -translate,0)
-    cairo_rotate(cr,-segundos)
     cairo_stroke (cr)
 end
 

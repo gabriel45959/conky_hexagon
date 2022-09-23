@@ -38,8 +38,7 @@ conky.config = {
 };
 
 conky.text = [[
-${image /home/gabriel/conky_gaby/primary/img/logo-arch.png -p 14,20 -s 60x60}
-${voffset 236}
+${voffset 253}
 ${offset 27}${color1}${cpugraph cpu0 20,85 FFFF00 FF0000 s}
 ${voffset -5}
 ${offset 217}${color1}${memgraph 20,85 FFFF00 FF0000 1 -t}
