@@ -1,99 +1,87 @@
 require 'cairo'
+require 'lunajson'
+manager_file=require ('conky_hexagon.manager_file')
 
-config = {
+json_weather={}
+
+
+config_edge_motion = {
     {
-        x=-165,    y=175,
+        x=425,    y=80,
         hexagon_rotate=90,
         title={
-            text="cpu",
-            color={0xFFFFFF,.2},
-            font_size=65,
-            x=-27,y=25,
-        },
-        percentage ={
-            process="${cpu}",
-            color={0xFFFFFF,1},
-            font_size=20,
-            x=70,y=-15,
+            text="UPTIME",
+            color={0xFFFFFF,0.5},
+            font_size=25,
+            x=5,y=-15,
         },
         hexagon_edge={
-            diameter=110,
-            edge_color={0xFFFFFF,1},
-            line_width_edge=1,
+            diameter=103,
+            edge_color={0x01009f,0.7},
+            line_width_edge=5,
             fill=0,
-            width=100,
+            width=100, 
         },
         hexagon_background={
             diameter=100,
-            edge_color={0x0038ff,0.15},
+            edge_color={0x0139ff,0.25},
             line_width_edge=1,
             fill=1,
             width=100,
         },
         hexagon_inside={
-            diameter_init=50,
             diameter=95,
-            edge_color={{0x07b60a,1}},
+            edge_color={0x0139ff,1},
             line_width_edge=3,
             fill=0,
             width=100,
-            degrade_edge_color={
-                --verde
-                {color={0x07b60a,0.4}},
-                --amarillo
-                {color={0xfdff00,0.6}},
-                --naranja
-                {color={0xfbc621,0.7}},
-                --rojo
-                {color={0xff0000,1}},
-            }
         },
-        top={
-            number_of_process=4,
-            name="top name",process="top cpu",
-            font_size=10.0,
-            color={0xFFFFFF,1},
-            distance_between_line=10,
-            distance_between_text=100,
-            x=-20, y=30,
-        },
+        command={
+            {
+                 x=-15,y=15,
+                 text_color={0xffffff,1},
+                 font_size=25,
+                 distance_between_text=0,
+                 title="",
+                 command="${uptime}",
+             },
+         },
     },
     {
-        x=190,    y=52,
+        x=193,    y=52,
         hexagon_rotate=90,
         title={
-            text="mem",
-            color={0xFFFFFF,.2},
-            font_size=65,
-            x=-27,y=25,
+            text="MEM",
+            color={0xFFFFFF,.3},
+            font_size=25,
+            x=20,y=-15,
         },
         percentage ={
             process="${memperc}",
             color={0xFFFFFF,1},
-            font_size=20,
-            x=70,y=-15,
+            font_size=30,
+            x=125,y=10,
         },
         hexagon_edge={
-            diameter=110,
-            edge_color={0xFFFFFF,1},
-            line_width_edge=1,
+            diameter=105,
+            edge_color={0x07b60a,.3},
+            line_width_edge=2,
             fill=0,
-            width=100,
+            width=180,
         },
         hexagon_background={
             diameter=100,
             edge_color={0x0038ff,0.15},
             line_width_edge=1,
-            fill=1,
-            width=100,
+            fill=0,
+            width=180,
         },
         hexagon_inside={
-            diameter_init=50,
             diameter=95,
             edge_color={{0x07b60a,1}},
-            line_width_edge=3,
+            line_width_edge=2,
             fill=0,
-            width=100,
+            width=180,
             degrade_edge_color={
                 --verde
                 {color={0x07b60a,0.4}},
@@ -116,10 +104,10 @@ config = {
         },
     },
     {
-        x=-190,    y=52,
+        x=-193,    y=319,
         hexagon_rotate=90,
         title={
-            text="Disk",
+            text="DISK",
             color={0xFFFFFF,0.2},
             font_size=65,
             x=-27,y=25,
@@ -127,7 +115,7 @@ config = {
 
         hexagon_edge={
             diameter=110,
-            edge_color={0xffffff,1},
+            edge_color={0xFFFFFF,1},
             line_width_edge=1,
             fill=0,
             width=100,
@@ -140,7 +128,6 @@ config = {
             width=100,
         },
         hexagon_inside={
-            diameter_init=50,
             diameter=95,
             edge_color={0x0c8d00,1},
             line_width_edge=3,
@@ -167,120 +154,366 @@ config = {
         },
     },
     {
-        x=190,    y=52,
+        x=-275,    y=-319,
         hexagon_rotate=90,
         title={
-            text="up",
-            color={0xFFFFFF,0.2},
-            font_size=65,
-            x=10,y=25,
+            text="CPU",
+            color={0xFFFFFF,0.4},
+            font_size=25,
+            x=32,y=-15,
+        },
+        percentage ={
+            process="${cpu}",
+            color={0xFFFFFF,1},
+            font_size=30,
+            x=125,y=10,
         },
         hexagon_edge={
-            diameter=110,
-            edge_color={0xffffff,1},
+            diameter=105,
+            edge_color={0x07b60a,.3},
+            line_width_edge=2,
+            fill=0,
+            width=180,
+        },
+        hexagon_background={
+            diameter=100,
+            edge_color={0x07b60a,0.1},
+            line_width_edge=1,
+            fill=1,
+            width=180,
+        },
+        hexagon_inside={
+            diameter=95,
+            edge_color={{0x07b60a,1}},
+            line_width_edge=3,
+            fill=0,
+            width=180,
+            degrade_edge_color={
+                --verde
+                {color={0x07b60a,0.4}},
+                --amarillo
+                {color={0xfdff00,0.6}},
+                --naranja
+                {color={0xfbc621,0.7}},
+                --rojo
+                {color={0xff0000,1}},
+            }
+        },
+        
+        top={
+            number_of_process=4,
+            name="top name",process="top cpu",
+            font_size=10.0,
+            color={0xFFFFFF,1},
+            distance_between_line=10,
+            distance_between_text=120,
+            x=-20, y=30,
+        },
+    },
+    {
+        x=40,    y=90,
+        hexagon_rotate=90,
+        title={
+            text="${addr wlp3s0}",
+            color={0xFFFFFF,0.5},
+            font_size=15,
+            x=7,y=-10,
+        },
+        hexagon_edge={
+            diameter=85,
+            edge_color={0xd65600,0.5},
             line_width_edge=1,
             fill=0,
             width=100,
         },
         hexagon_background={
-            diameter=100,
-            edge_color={0xffffff,0.2},
+            diameter=60,
+            edge_color={0xd65600,0.3},
             line_width_edge=1,
             fill=1,
             width=100,
         },
         hexagon_inside={
-            diameter_init=50,
-            diameter=95,
-            edge_color={0xffffff,0.5},
-            line_width_edge=3,
+            diameter=75,
+            edge_color={0xd65600,1},
+            line_width_edge=2,
+            fill=0,
+            width=100,
+        },
+        command={
+           
+            {
+                x=5,y=9,
+                text_color={0xffffff,1},
+                font_size=13,
+                distance_between_text=75,
+                title="",
+                command="${totaldown wlp3s0}",
+            },
+            {
+               x=5,y=20,
+               text_color={0xffffff,1},
+               font_size=13,
+               distance_between_text=75,
+               title="",
+               command="${totalup wlp3s0}",
+           },
+           {
+               x=-10,y=9,
+               text_color={0xffffff,1},
+               font_size=13,
+               distance_between_text=45,
+               title="Down:",
+               command="${downspeed wlp3s0}",
+           },
+           {
+               x=-10,y=20,
+               text_color={0xffffff,1},
+               font_size=13,
+               distance_between_text=45,
+               title="Up:",
+               command="${upspeed wlp3s0}",
+           },
+        },
+    },
+    {
+        x=0,    y=-180,
+        hexagon_rotate=90,
+        title={
+            text="/",
+            color={0xFFFFFF,0.5},
+            font_size=25,
+            x=45,y=-5,
+        },
+        hexagon_edge={
+            diameter=85,
+            edge_color={0xd65600,0.5},
+            line_width_edge=1,
+            fill=0,
+            width=100,
+        },
+        hexagon_background={
+            diameter=60,
+            edge_color={0xd65600,0.3},
+            line_width_edge=1,
+            fill=1,
+            width=100,
+        },
+        hexagon_inside={
+            diameter=75,
+            edge_color={0xd65600,1},
+            line_width_edge=2,
             fill=0,
             width=100,
         },
         command={
             {
-                x=-19,y=10,
-                text_color={0x2ef900,0.7},
-                font_size=25,
-                command="${uptime}",
-            },
-        },
+                 x=-55,y=15,
+                 text_color={0xffffff,1},
+                 font_size=13,
+                 distance_between_text=55,
+                 title="",
+                 command="${fs_used_perc /}%  ${fs_used /}/${fs_size /}",
+             },
+         },
     },
     {
-        x=-190,    y=52,
+        x=467,    y=0,
         hexagon_rotate=90,
         title={
-            text="temp",
-            color={0xFFFFFF,0.05},
-            font_size=65,
-            x=-27,y=25,
+            text="DATA",
+            color={0xFFFFFF,0.5},
+            font_size=25,
+            x=15,y=-5,
         },
         hexagon_edge={
-            diameter=110,
-            edge_color={0xffffff,1},
+            diameter=80,
+            edge_color={0x8F3B39,.5},
             line_width_edge=1,
             fill=0,
             width=100,
         },
         hexagon_background={
-            diameter=100,
-            edge_color={0x666699,0.3},
+            diameter=60,
+            edge_color={0x8F3B39,0.3},
             line_width_edge=1,
             fill=1,
             width=100,
         },
         hexagon_inside={
-            diameter_init=50,
-            diameter=95,
-            edge_color={0xffffff,0.7},
-            line_width_edge=3,
+            diameter=75,
+            edge_color={0x8F3B39,1},
+            line_width_edge=2,
             fill=0,
             width=100,
         },
+        command={
+            {
+                 x=-55,y=15,
+                 text_color={0xffffff,1},
+                 font_size=13,
+                 distance_between_text=55,
+                 title="",
+                 command="${fs_used_perc /home/gabriel/DATA}%  ${fs_used /home/gabriel/DATA}/${fs_size /home/gabriel/DATA}",
+             },
+         },
     },
-
+    {
+        x=0,    y=179,
+        hexagon_rotate=90,
+        title={
+            text="${addr enp2s0}",
+            color={0xFFFFFF,0.5},
+            font_size=15,
+            x=7,y=-10,
+        },
+        hexagon_edge={
+            diameter=85,
+            edge_color={0xd65600,0.5},
+            line_width_edge=1,
+            fill=0,
+            width=100,
+        },
+        hexagon_background={
+            diameter=60,
+            edge_color={0xd65600,0.3},
+            line_width_edge=1,
+            fill=1,
+            width=100,
+        },
+        hexagon_inside={
+            diameter=75,
+            edge_color={0xd65600,1},
+            line_width_edge=2,
+            fill=0,
+            width=100,
+        },
+        command={
+           
+            {
+                x=5,y=9,
+                text_color={0xffffff,1},
+                font_size=13,
+                distance_between_text=75,
+                title="",
+                command="${totaldown enp2s0}",
+            },
+            {
+               x=5,y=20,
+               text_color={0xffffff,1},
+               font_size=13,
+               distance_between_text=75,
+               title="",
+               command="${totalup enp2s0}",
+           },
+           {
+               x=-10,y=9,
+               text_color={0xffffff,1},
+               font_size=13,
+               distance_between_text=45,
+               title="Down:",
+               command="${downspeed enp2s0}",
+           },
+           {
+               x=-10,y=20,
+               text_color={0xffffff,1},
+               font_size=13,
+               distance_between_text=45,
+               title="Up:",
+               command="${upspeed enp2s0}",
+           },
+        },
+    },
+    --x=-825,    y=-238,
+       
 }
 config_clock={
     {
-        x=220,    y=140,
+        x=475,    y=265,
         edge_clock={
-            diameter=273,
-            edge_color={0xaeb3b3,0.25},
-            line_width_edge=1,
-            fill=1,
+            diameter=300,
+            edge_color={0x000015,0.5},
+            line_width_edge=2,
+            fill=0,
             width=0,
             rotate=90,
         },
-        info={
-            {
-                data="${time %d} ${time  %B} ${time %Y}",
-                color={0xFFFFFF,.7},
-                font_size=18,
-                x=5,y=-50,
+        background_clock={
+            { --rigth up
+                x=233,y=-133,
+                diameter=300,
+                edge_color={0x0e2f05,0.5},
+                line_width_edge=1,
+                fill=1,
+                width=0,
+                rotate=90,   
             },
+            { --rigth down
+                x=0,y=269,
+                diameter=300,
+                edge_color={0xcad5cc,0},
+                line_width_edge=1,
+                fill=0,
+                width=0,
+                rotate=90,   
+            },
+            { --left up
+                x=-468,y=-269,
+                diameter=300,
+                edge_color={0x000015,0.5},
+                line_width_edge=1,
+                fill=1,
+                width=0,
+                rotate=90,   
+            },
+            { --left down
+                x=0,y=269,
+                diameter=300,
+                edge_color={0xcad5cc,0.01},
+                line_width_edge=1,
+                fill=1,
+                width=0,
+                rotate=90,   
+            }
+
+            
+        },
+        info={
             {
                 data="${time %A}",
                 color={0xf0b036,1},
                 font_size=27,
-                x=-10,y=-80,
+                x=-7,y=-90,z=0,
             },
             {
-                data="${kernel}",
-                color={0xffffff,0.7},
+                data="${time %d} ${time  %B} ${time %Y}",
+                color={0xFFFFFF,.7},
                 font_size=20,
-                x=0,y=-19,
+                x=0,y=-60,z=0,
             },
             {
                 data="${exec lsb_release -d | cut -d ':' -f 2 | tr  -d '[:blank:]'}",
                 color={0xffffff,0.9},
                 font_size=18,
-                x=0,y=60,
+                x=-5,y=40,z=0,
             },
             {
-                data="${addr enp3s0}",
+                data="${kernel}",
+                color={0xffffff,0.7},
+                font_size=18,
+                x=5,y=65,z=0,
+            },
+            {
+                data="${addr wlp3s0}",
                 color={0xdfa418,0.8},
                 font_size=18,
-                x=0,y=90,
+                x=0,y=90,z=0,
+            },
+            {
+                data="${addr enp2s0}",
+                color={0xdfa418,0.8},
+                font_size=18,
+                x=0,y=110,z=0,
             },
         },
         clock_center={
@@ -314,20 +547,186 @@ config_clock={
     },
 
 }
+config_weather={
+    {
+    x=0,    y=0,
+    consult_weather={
+        command="${execi 3600000 curl https://wttr.in/montevideo?format=j1 > ~/conky_hexagon/weather.json}",
+    },
+    hexagon_background={
+            {
+                x=709,y=400,
+                diameter=300,
+                edge_color={0xcad5cc,0.2},
+                line_width_edge=1,
+                fill=1,
+                width=0,
+                rotate=90,
+            },
+    },
+    info={
+        {
+            data="temp_C",
+            text="°C",
+            color={0xf0b036,1},
+            font_size=30,
+            x=-40,y=-85,
+        },
+        {
+            data="maxtempC",
+            text=" °C  |",
+            color={0xff0000,1},
+            font_size=15,
+            x=-75,y=-70,
+        },
+        {
+            data="FeelsLikeC",
+            text=" °C  |",
+            color={0xffffff,1},
+            font_size=15,
+            x=-15,y=-70,
+        },
+        {
+            data="mintempC",
+            text=" °C",
+            color={0x0080ff,1},
+            font_size=15,
+            x=45,y=-70,
+        }, 
+        {
+            data="weatherDesc",
+            text="",
+            color={0xffffff,1},
+            font_size=20,
+            x=-100,y=-40,
+        },
+        {
+            data="uvIndex",
+            text="uv",
+            color={0xf0b036,1},
+            font_size=15,
+            x=-50,y=-20,
+        },
+        {
+            data="visibility",
+            text="Km",
+            color={0xf0b036,1},
+            font_size=15,
+            x=-10,y=-20,
+        },
+        {
+            data="winddir16Point",
+            text="",
+            color={0xf0b036,1},
+            font_size=20,
+            x=65,y=-40,
+        },
+        {
+            data="windspeedKmph",
+            text="Kmph",
+            color={0xf0b036,1},
+            font_size=15,
+            x=55,y=-20,
+        },
+        {
+            data="sunHour",
+            text="Hs",
+            color={0xf0b036,1},
+            font_size=15,
+            x=-110,y=-20,
+        },
+
+    },
+ 
+    },
+
+}
 function hex_to_rgba(tcolour)
     colour,alpha=tcolour[1],tcolour[2]
     return ((colour / 0x10000) % 0x100) / 255., ((colour / 0x100) % 0x100) / 255., (colour % 0x100) / 255., alpha
+end
+function show_text(cr,v,text)
+    cairo_move_to (cr, v['x'],v['y'])
+    local font_type="Courier New Regular"
+    --cairo_select_font_face(cr, "Webdings",CAIRO_FONT_SLANT_NORMAL,CAIRO_FONT_WEIGHT_NORMAL);
+    if text:sub(1,1)=='$' then
+        text=conky_parse(text)
+    end
+    
+    if v['font_type'] ~= nil then
+        font_type =v['font_type']
+    end
+    cairo_select_font_face(cr, font_type ,CAIRO_FONT_SLANT_NORMAL,CAIRO_FONT_WEIGHT_NORMAL);
+    cairo_set_font_size (cr, v['font_size'])
+    cairo_set_source_rgba(cr,hex_to_rgba(v['color']))
+    cairo_show_text(cr,text)
+    cairo_stroke (cr)
+end
+function percentage_hexagon_edge_motion(ctx,values)
+    data=tonumber(conky_parse (values['percentage']['process']))
+
+    if data <= 20 then
+        k=1
+    elseif data <= 50 then
+        k=2
+    elseif  data <=80 then
+        k=3
+    else
+        k=4
+    end
+
+    values['hexagon_inside']['edge_color']=values['hexagon_inside']['degrade_edge_color'][k]['color']
+    hexagon(ctx,values['hexagon_inside'])
+
+    cairo_rotate(ctx,-angle_to_position(180,values['hexagon_rotate']))
+    --VALUE
+    cairo_move_to (ctx, values['percentage']['x'],values['percentage']['y'])
+    cairo_set_font_size (ctx, values['percentage']['font_size'])
+    if data <= 20 then
+        cairo_set_source_rgba(ctx,hex_to_rgba(values['percentage']['color']))
+    else
+        cairo_set_source_rgba(ctx,hex_to_rgba(values['hexagon_inside']['degrade_edge_color'][k]['color']))
+    end
+    cairo_show_text(ctx,add_space_to_not_move(data.."").."%")
+    cairo_stroke (ctx)
+end
+function top_hexagon_edge_motion(ctx,values)
+    local i =1
+    local x =values['top']['x']
+    local y =values['top']['y']
+    while i<=values['top']['number_of_process'] do
+        cairo_move_to (ctx, x,y)
+        cairo_set_font_size (ctx, values['top']['font_size'])
+        cairo_set_source_rgba(ctx,hex_to_rgba(values['top']['color']))
+        cairo_show_text(ctx,conky_parse ("${"..values['top']['name'].." "..i.."}"):gsub("%s+", ""))
+        cairo_move_to (ctx,x+values['top']['distance_between_text'],y)
+        cairo_show_text(ctx,conky_parse ("${"..values['top']['process'].." "..i.."}").."%")
+        y=y-values['top']['distance_between_line']
+        i=i+1
+    end
+end
+function command_edge_motion(ctx,values)
+    for i in pairs(values['command']) do
+
+        local x =values['command'][i]['x']
+        local y =values['command'][i]['y']
+
+        cairo_move_to (ctx, x,y)
+        cairo_set_source_rgba(ctx,hex_to_rgba(values['command'][i]['text_color']))
+        cairo_set_font_size (ctx, values['command'][i]['font_size'])
+        if values['command'][i]['title']~= nil then
+                cairo_show_text(ctx,values['command'][i]['title'])
+                cairo_move_to (ctx,x+values['command'][i]['distance_between_text'],y)
+        end
+        cairo_show_text(ctx,conky_parse (values['command'][i]['command']))
+    end
 end
 function hexagon_edge_motion(ctx,values)
     k=1
     cairo_translate (ctx, values['x'],values['y'])
 
     --TITLE
-    cairo_move_to (ctx, values['title']['x'],values['title']['y'])
-    cairo_set_font_size (ctx, values['title']['font_size'])
-    cairo_set_source_rgba(ctx,hex_to_rgba(values['title']['color']))
-    cairo_show_text(ctx,values['title']['text']:upper())
-    cairo_stroke (ctx)
+    show_text(ctx,values['title'],values['title']['text'])
 
     --HEXAGON
     cairo_rotate(ctx,angle_to_position(180,values['hexagon_rotate']))
@@ -339,32 +738,8 @@ function hexagon_edge_motion(ctx,values)
     --CHANGE COLOR HEXAGON INSIDE
     if values['percentage'] ~= nil then
 
-            data=tonumber(conky_parse (values['percentage']['process']))
-
-            if data <= 20 then
-                k=1
-            elseif data <= 50 then
-                k=2
-            elseif  data <=80 then
-                k=3
-            else
-                k=4
-            end
-
-            values['hexagon_inside']['edge_color']=values['hexagon_inside']['degrade_edge_color'][k]['color']
-            hexagon(ctx,values['hexagon_inside'])
-
-            cairo_rotate(ctx,-angle_to_position(180,values['hexagon_rotate']))
-            --VALUE
-            cairo_move_to (ctx, values['percentage']['x'],values['percentage']['y'])
-            cairo_set_font_size (ctx, values['percentage']['font_size'])
-            if data <= 20 then
-                cairo_set_source_rgba(ctx,hex_to_rgba(values['percentage']['color']))
-            else
-                cairo_set_source_rgba(ctx,hex_to_rgba(values['hexagon_inside']['degrade_edge_color'][k]['color']))
-            end
-            cairo_show_text(ctx,add_space_to_not_move(data.."").."%")
-            cairo_stroke (ctx)
+        percentage_hexagon_edge_motion(ctx,values)
+           
     else
         hexagon(ctx,values['hexagon_inside'])
         cairo_rotate(ctx,-angle_to_position(180,values['hexagon_rotate']))
@@ -372,39 +747,11 @@ function hexagon_edge_motion(ctx,values)
 
     --PROCESS
     if values['top'] ~= nil then
-
-            local i =1
-            local x =values['top']['x']
-            local y =values['top']['y']
-            while i<=values['top']['number_of_process'] do
-                cairo_move_to (ctx, x,y)
-                cairo_set_font_size (ctx, values['top']['font_size'])
-                cairo_set_source_rgba(ctx,hex_to_rgba(values['top']['color']))
-                cairo_show_text(ctx,conky_parse ("${"..values['top']['name'].." "..i.."}"):gsub("%s+", ""))
-                cairo_move_to (ctx,x+values['top']['distance_between_text'],y)
-                cairo_show_text(ctx,conky_parse ("${"..values['top']['process'].." "..i.."}").."%")
-                y=y-values['top']['distance_between_line']
-                i=i+1
-            end
+        top_hexagon_edge_motion(ctx,values)            
     end
     --COMMANDS
     if values['command'] ~= nil then
-
-        for i in pairs(values['command']) do
-
-            local x =values['command'][i]['x']
-            local y =values['command'][i]['y']
-
-            cairo_move_to (ctx, x,y)
-            cairo_set_source_rgba(ctx,hex_to_rgba(values['command'][i]['text_color']))
-            cairo_set_font_size (ctx, values['command'][i]['font_size'])
-            if values['command'][i]['title']~= nil then
-                    cairo_show_text(ctx,values['command'][i]['title'])
-                    cairo_move_to (ctx,x+values['command'][i]['distance_between_text'],y)
-            end
-            cairo_show_text(ctx,conky_parse (values['command'][i]['command']))
-        end
-
+        command_edge_motion(ctx,values)        
     end
      cairo_stroke (ctx)
 end
@@ -455,13 +802,18 @@ function angle_to_position(start_angle, current_angle)
     return ( ( current_angle * (2 * math.pi / start_angle) ) - (math.pi / 2) )
 end
 --calcular posicion del texto dentro del reloj
-function calc_position(data_value)
-   
+function calc_position_text_clock(data_value)
+    local text
         if data_value['data']:sub(1,1)=='$' then
-            return data_value['x']-((string.len(conky_parse(data_value['data']))/2)*10)
+            text=(string.len(conky_parse(data_value['data']))/2)*10
+           -- print(conky_parse(data_value['data']).." "..string.len(conky_parse(data_value['data'])).." text:"..text)
         else
-            return data_value['x']-((string.len(data_value['data'])/2)*10)
+            text=((string.len(data_value['data'])/2)*10)
+           -- print((data_value['data']).." "..string.len((data_value['data'])).." text:"..text)
         end
+
+        data_value['z']=-text
+    return data_value['x']-text
 end
 --dibujo y posiciono las manecillas del reloj
 function hand_clock(cr,time,values,number_hexagon,type_hand,type_translate)
@@ -477,26 +829,37 @@ function hand_clock(cr,time,values,number_hexagon,type_hand,type_translate)
     cairo_translate (cr, -translate,0)
     cairo_rotate(cr,-time)
 end
+function hexagon_background(cr,values)
+    local x=0
+    local y=0
+    for i in pairs(values) do 
+        cairo_translate (cr, values[i]['x'],values[i]['y'])
+        cairo_rotate(cr,angle_to_position(180,values[i]['rotate']))
+        hexagon(cr,values[i]) 
+        cairo_rotate(cr,angle_to_position(90,values[i]['rotate']))   
+        x=x-values[i]['x']
+        y=y-values[i]['y']
+    end
+    return {x,y}
+end
 -- reloj
 function hexagon_clock(cr,values)
     local i=1
     local translate=0
+    
     cairo_translate (cr, values['x'],values['y'])
     cairo_rotate(cr,angle_to_position(180,values['edge_clock']['rotate']))
     hexagon(cr,values['edge_clock']) --fondo del reloj
     cairo_rotate(cr,angle_to_position(90,values['edge_clock']['rotate']))
     hexagon(cr,values['clock_center'])
-
+    
     --posicion y visualizacion del texto dentro del reloj
     for i in pairs(values['info']) do        
-        cairo_move_to (cr, calc_position(values['info'][i]),values['info'][i]['y'])
-        cairo_set_font_size (cr, values['info'][i]['font_size'])
-        cairo_set_source_rgba(cr,hex_to_rgba(values['info'][i]['color']))
-        if values['info'][i]['data']:sub(1,1)=='$' then
-            cairo_show_text(cr,conky_parse(values['info'][i]['data']))
-        else
-            cairo_show_text(cr,values['info'][i]['data'])
+        if values['info'][i]['z'] == 0 then
+            values['info'][i]['x'] = calc_position_text_clock(values['info'][i])
         end
+
+        show_text(cr,values['info'][i],values['info'][i]['data'])
     end
     cairo_stroke (cr)
 
@@ -514,25 +877,65 @@ function hexagon_clock(cr,values)
     hand_clock(cr,seconds,values,6,'seconds','seconds')
 
     cairo_stroke (cr)
+
+    hexagon_background(cr,values['background_clock'])
+    
 end
 
 
+function hexagon_weather(cr,values)
+   
+    hexagon_background(cr,values['hexagon_background']) 
+    
+    for i in pairs(values['info']) do
+        show_text(cr,values['info'][i],json_weather[values['info'][i]['data']]..values['info'][i]['text'])
+    end
+   
+end
+
+function conky_image_weather()
+    local name_file="3200"
+   
+    if json_weather["weatherDesc"] ~= nil then
+
+        name_file=json_weather["weatherDesc"]:gsub(" ","_")
+
+        --valido si es AM o PM
+        if tonumber(string.sub(conky_parse("${time %H:%M}"),1,2)) < 12 and tonumber(string.sub(conky_parse("${time %H:%M}"),1,2)) < (tonumber(string.sub(json_weather["sunset"],1,2))) then
+            name_file=name_file.."_N"
+        elseif tonumber(string.sub(conky_parse("${time %H:%M}"),1,2)) > 12 and tonumber(string.sub(conky_parse("${time %H:%M}"),1,2)) > (tonumber(string.sub(json_weather["sunrise"],1,2))+12) then
+            name_file=name_file.."_N"
+        end
+        return "${image ~/conky_hexagon/imagenes/"..name_file..".png -p 630,410 -s 150x80}"
+    end
+
+    return "${image ~/conky_hexagon/imagenes/"..name_file..".png -p 680,420 -s 50x50}"
+end
+
 function conky_draw_clock()
+
     if conky_window==nil then return end
-
-    local cs=cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual,conky_window.width, conky_window.height)
     local update_conky=tonumber(conky_parse('${updates}'))
-    local cr=cairo_create(cs)
+    local cr=cairo_create(cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual,conky_window.width, conky_window.height))
+    local cr1=cairo_create(cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual,conky_window.width, conky_window.height))
+    local cr2=cairo_create(cairo_xlib_surface_create(conky_window.display, conky_window.drawable, conky_window.visual,conky_window.width, conky_window.height))
+
+    if update_conky > 5 then
+        conky_parse(config_weather[1]['consult_weather']['command'])
+    end
+    
+    json_weather= read_weather(conky_parse("${exec echo $HOME}")..'/conky_hexagon/weather.json')
+
     if update_conky > 1 then
-	    --      cairo_paint_with_alpha(cr,0.1) --background is faded out using the alpha value
 
-        for i in pairs(config_clock) do
-            hexagon_clock(cr,config_clock[i])
+        hexagon_clock(cr,config_clock[1])
+        
+        for i in pairs(config_edge_motion) do
+            hexagon_edge_motion(cr1,config_edge_motion[i])
+            
         end
-
-        for i in pairs(config) do
-            hexagon_edge_motion(cr,config[i])
-        end
+ 
+        hexagon_weather(cr2,config_weather[1])
 
 
     end

@@ -12,11 +12,11 @@ conky.config = {
 	update_interval = 1,
 
 	alignment = 'top_right',
-	gap_x = 22,
-	gap_y = 42,
+	gap_x = 12,
+	gap_y = 32,
 	minimum_height = 568,
-	minimum_width = 390,
-	maximum_width = 390,
+	minimum_width = 850,
+	maximum_width = 850,
 
 	font = 'Noto Mono:size=11:regular',
 	override_utf8_locale = true,
@@ -35,15 +35,10 @@ conky.config = {
 
     lua_load = '/home/gabriel/conky_hexagon/hexagon.lua',
 	lua_draw_hook_pre = 'draw_clock',
+	
 };
 
 conky.text = [[
-${voffset 253}
-${offset 27}${color1}${cpugraph cpu0 20,85 FFFF00 FF0000 s}
-${voffset -5}
-${offset 217}${color1}${memgraph 20,85 FFFF00 FF0000 1 -t}
-${voffset 45}
-${offset 30}${color2}${diskiograph 20,140 FFFF00 FF0000}
-${execpi 300 curl -s "https://wttr.in/X5000.png?Q0t" -o ~/.cache/X5000.png }
-${image ~/.cache/X5000.png -p -10,487 -s 200x70}
+
+${lua_parse image_weather}
 ]]
