@@ -11,8 +11,12 @@ function read_weather(file_weather)
     if fileweather ~= nil then
 
         local readfile = fileweather:read("*a")
-
         fileweather:close()
+
+	if readfile:sub(1,1) ~= '{' then
+	   return nil
+	end
+
 
         local dataJson = json.decode(readfile)
         

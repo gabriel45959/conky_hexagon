@@ -107,16 +107,16 @@ config_edge_motion = {
         x=-193,    y=319,
         hexagon_rotate=90,
         title={
-            text="DISK",
+            text="",
             color={0xFFFFFF,0.2},
             font_size=65,
             x=-27,y=25,
         },
 
         hexagon_edge={
-            diameter=110,
-            edge_color={0xFFFFFF,1},
-            line_width_edge=1,
+            diameter=105,
+            edge_color={0x0c8d00,0.5},
+            line_width_edge=3,
             fill=0,
             width=100,
         },
@@ -133,24 +133,6 @@ config_edge_motion = {
             line_width_edge=3,
             fill=0,
             width=100,
-        },
-        command={
-           {
-                x=-30,y=-15,
-                text_color={0xffffff,1},
-                font_size=13,
-                distance_between_text=55,
-                title="/",
-                command="${fs_used_perc /}%  ${fs_used /}/${fs_size /}",
-            },
-            {
-                x=-30,y=5,
-                text_color={0xffffff,1},
-                font_size=13,
-                distance_between_text=55,
-                title="DATA",
-                command="${fs_used_perc /home/gabriel/DATA}%  ${fs_used /home/gabriel/DATA}/${fs_size /home/gabriel/DATA}",
-            }
         },
     },
     {
@@ -550,6 +532,7 @@ config_clock={
 config_weather={
     {
     x=0,    y=0,
+    image_weather="${image ~/conky_hexagon/imagenes/",
     consult_weather={
         command="${execi 3600000 curl https://wttr.in/montevideo?format=j1 > ~/conky_hexagon/weather.json}",
     },
@@ -886,30 +869,41 @@ end
 function hexagon_weather(cr,values)
    
     hexagon_background(cr,values['hexagon_background']) 
-    
-    for i in pairs(values['info']) do
-        show_text(cr,values['info'][i],json_weather[values['info'][i]['data']]..values['info'][i]['text'])
+   if json_weather ~= nil then 
+    	for i in pairs(values['info']) do
+        	show_text(cr,values['info'][i],json_weather[values['info'][i]['data']]..values['info'][i]['text'])
+    	end
+   end
+end
+
+function split_text(text,d)
+    result = {};
+    for match in (text..d):gmatch("(.-)"..d) do
+        table.insert(result, match);
     end
-   
+    return result;
 end
 
 function conky_image_weather()
     local name_file="3200"
-   
+    if json_weather == nil then
+	   return config_weather[1]["image_weather"]..name_file..".png -p 680,420 -s 50x50}"
+    end
     if json_weather["weatherDesc"] ~= nil then
 
-        name_file=json_weather["weatherDesc"]:gsub(" ","_")
+        name_file=split_text(json_weather["weatherDesc"]:gsub(" ","_"), ",")[1]
 
         --valido si es AM o PM
-        if tonumber(string.sub(conky_parse("${time %H:%M}"),1,2)) < 12 and tonumber(string.sub(conky_parse("${time %H:%M}"),1,2)) < (tonumber(string.sub(json_weather["sunset"],1,2))) then
-            name_file=name_file.."_N"
-        elseif tonumber(string.sub(conky_parse("${time %H:%M}"),1,2)) > 12 and tonumber(string.sub(conky_parse("${time %H:%M}"),1,2)) > (tonumber(string.sub(json_weather["sunrise"],1,2))+12) then
+        if (tonumber(string.sub(conky_parse("${time %H:%M}"),1,2)) < 12 and tonumber(string.sub(conky_parse("${time %H:%M}"),1,2)) < (tonumber(string.sub(json_weather["sunset"],1,2)))) 
+            or
+          (tonumber(string.sub(conky_parse("${time %H:%M}"),1,2)) > 12 and tonumber(string.sub(conky_parse("${time %H:%M}"),1,2)) > (tonumber(string.sub(json_weather["sunrise"],1,2))+12))
+        then
             name_file=name_file.."_N"
         end
-        return "${image ~/conky_hexagon/imagenes/"..name_file..".png -p 630,410 -s 150x80}"
+        return config_weather[1]["image_weather"]..name_file..".png -p 630,410 -s 150x80}"
     end
 
-    return "${image ~/conky_hexagon/imagenes/"..name_file..".png -p 680,420 -s 50x50}"
+    return config_weather[1]["image_weather"]..name_file..".png -p 680,420 -s 50x50}"
 end
 
 function conky_draw_clock()
