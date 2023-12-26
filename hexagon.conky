@@ -28,17 +28,14 @@ conky.config = {
 	own_window_argb_value = 15,
 	own_window_argb_visual = true,
 	own_window_class = 'Conky',
-	own_window_hints = 'undecorated,below,above,sticky,skip_taskbar,skip_pager',
 	own_window_transparent = true,
 	own_window_title = 'system_conky',
-	own_window_type = 'override',
+	own_window_type = 'desktop',
 
     lua_load = '/home/gabriel/conky_hexagon/hexagon.lua',
-	lua_draw_hook_pre = 'draw_clock',
-	
-};
+	lua_draw_hook_pre = 'draw_clock',	
+}
 
 conky.text = [[
-
 ${lua_parse image_weather}
 ]]

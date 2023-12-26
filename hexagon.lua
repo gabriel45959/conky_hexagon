@@ -1,9 +1,8 @@
+#!/usr/bin/lua5.1
 require 'cairo'
 require 'lunajson'
 manager_file=require ('conky_hexagon.manager_file')
-
 json_weather={}
-
 
 config_edge_motion = {
     {
@@ -196,7 +195,7 @@ config_edge_motion = {
         x=40,    y=90,
         hexagon_rotate=90,
         title={
-            text="${addr wlp3s0}",
+            text="${addr enp3s0}",
             color={0xFFFFFF,0.5},
             font_size=15,
             x=7,y=-10,
@@ -225,20 +224,20 @@ config_edge_motion = {
         command={
            
             {
-                x=5,y=9,
+                x=1,y=9,
                 text_color={0xffffff,1},
                 font_size=13,
                 distance_between_text=75,
                 title="",
-                command="${totaldown wlp3s0}",
+                command="${totaldown enp3s0}",
             },
             {
-               x=5,y=20,
+               x=1,y=20,
                text_color={0xffffff,1},
                font_size=13,
                distance_between_text=75,
                title="",
-               command="${totalup wlp3s0}",
+               command="${totalup enp3s0}",
            },
            {
                x=-10,y=9,
@@ -246,7 +245,7 @@ config_edge_motion = {
                font_size=13,
                distance_between_text=45,
                title="Down:",
-               command="${downspeed wlp3s0}",
+               command="${downspeed enp3s0}",
            },
            {
                x=-10,y=20,
@@ -254,7 +253,7 @@ config_edge_motion = {
                font_size=13,
                distance_between_text=45,
                title="Up:",
-               command="${upspeed wlp3s0}",
+               command="${upspeed enp3s0}",
            },
         },
     },
@@ -336,7 +335,7 @@ config_edge_motion = {
                  font_size=13,
                  distance_between_text=55,
                  title="",
-                 command="${fs_used_perc /home/gabriel/DATA}%  ${fs_used /home/gabriel/DATA}/${fs_size /home/gabriel/DATA}",
+                 command="${fs_used_perc /home/gabriel}%  ${fs_used /home/gabriel}/${fs_size /home/gabriel}",
              },
          },
     },
@@ -344,7 +343,7 @@ config_edge_motion = {
         x=0,    y=179,
         hexagon_rotate=90,
         title={
-            text="${addr enp2s0}",
+            text="${addr enp3s0}",
             color={0xFFFFFF,0.5},
             font_size=15,
             x=7,y=-10,
@@ -373,20 +372,20 @@ config_edge_motion = {
         command={
            
             {
-                x=5,y=9,
+                x=1,y=9,
                 text_color={0xffffff,1},
                 font_size=13,
                 distance_between_text=75,
                 title="",
-                command="${totaldown enp2s0}",
+                command="${totaldown enp3s0}",
             },
             {
-               x=5,y=20,
+               x=1,y=20,
                text_color={0xffffff,1},
                font_size=13,
                distance_between_text=75,
                title="",
-               command="${totalup enp2s0}",
+               command="${totalup enp3s0}",
            },
            {
                x=-10,y=9,
@@ -394,7 +393,7 @@ config_edge_motion = {
                font_size=13,
                distance_between_text=45,
                title="Down:",
-               command="${downspeed enp2s0}",
+               command="${downspeed enp3s0}",
            },
            {
                x=-10,y=20,
@@ -402,7 +401,7 @@ config_edge_motion = {
                font_size=13,
                distance_between_text=45,
                title="Up:",
-               command="${upspeed enp2s0}",
+               command="${upspeed enp3s0}",
            },
         },
     },
@@ -465,19 +464,19 @@ config_clock={
                 data="${time %A}",
                 color={0xf0b036,1},
                 font_size=27,
-                x=-7,y=-90,z=0,
+                x=-20,y=-90,z=0,
             },
             {
                 data="${time %d} ${time  %B} ${time %Y}",
                 color={0xFFFFFF,.7},
                 font_size=20,
-                x=0,y=-60,z=0,
+                x=-15,y=-60,z=0,
             },
             {
                 data="${exec lsb_release -d | cut -d ':' -f 2 | tr  -d '[:blank:]'}",
                 color={0xffffff,0.9},
-                font_size=18,
-                x=-5,y=40,z=0,
+                font_size=15,
+                x=13,y=40,z=0,
             },
             {
                 data="${kernel}",
@@ -486,13 +485,7 @@ config_clock={
                 x=5,y=65,z=0,
             },
             {
-                data="${addr wlp3s0}",
-                color={0xdfa418,0.8},
-                font_size=18,
-                x=0,y=90,z=0,
-            },
-            {
-                data="${addr enp2s0}",
+                data="${addr enp3s0}",
                 color={0xdfa418,0.8},
                 font_size=18,
                 x=0,y=110,z=0,

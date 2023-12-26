@@ -1,3 +1,5 @@
+#!/usr/bin/lua5.1
+
 json = require 'lunajson'
 
 local manager_file={}
