@@ -32,7 +32,7 @@ conky.config = {
 	own_window_title = 'system_conky',
 	own_window_type = 'desktop',
 
-    lua_load = '/home/gabriel/conky_hexagon/hexagon.lua',
+    lua_load = '~/conky_hexagon/hexagon.lua',
 	lua_draw_hook_pre = 'draw_clock',	
 }
 
