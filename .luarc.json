@@ -1,0 +1,10 @@
+{
+    "diagnostics.globals": [
+        "read_weather",
+        "hex_to_rgba",
+        "cairo_translate"
+    ],
+    "diagnostics.disable": [
+        "undefined-global"
+    ]
+}

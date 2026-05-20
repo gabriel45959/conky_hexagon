@@ -12,9 +12,9 @@ conky.config = {
 	update_interval = 1,
 
 	alignment = 'top_right',
-	gap_x = 22,
-	gap_y = 42,
-	minimum_height = 720,
+	gap_x = 12,
+	gap_y = 32,
+	minimum_height = 868,
 	minimum_width = 760,
 	maximum_width = 760,
 
@@ -24,14 +24,13 @@ conky.config = {
 	use_xft = true,
 	xftalpha = 1,
 
-	own_window = true,
+	own_window = yes,
 	own_window_argb_value = 15,
-	own_window_argb_visual = true,
+	own_window_argb_visual = yes,
 	own_window_class = 'Conky',
-	own_window_transparent = true,
+	own_window_transparent = yes,
 	own_window_title = 'system_conky',
-	own_window_type = 'override',
-  own_window_hints = 'undecorated,below,above,sticky,skip_taskbar,skip_pager',
+	own_window_type = 'desktop',
 
   lua_load = '~/conky_hexagon/clock_hexagon.lua',
 	lua_draw_hook_pre = 'draw_clock',
